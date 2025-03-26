@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, StyleSheet } from 'react-native';
-import { useSelector } from 'react-redux';
-import { MenuItemDetails } from '../type';
-import { RootState } from '../../../type/state';
 import { useBinaryAction } from '@wonder/core-native';
 import { orderActions } from '../../order';
 import { formatDollarAmount } from '../../../util/util';
 import { Navigation } from '../../Navigation';
+import { useModuleState } from '../../../hooks/useRuntimeState';
 
 export const CartAddActionPanel = () => {
-  const info: MenuItemDetails | null = useSelector(
-    (state: RootState) => state.app.detail.info
-  );
+  const { info } = useModuleState('detail', ['info']);
   const [quantity, setQuantity] = useState(1);
 
   const handleIncrease = () => {
@@ -22,9 +18,7 @@ export const CartAddActionPanel = () => {
       setQuantity((prevQuantity) => prevQuantity - 1);
     }
   };
-
   const addToCartAction = useBinaryAction(orderActions.addToCart, quantity);
-
   const handleAddToCart = (id: number, price: number) => {
     addToCartAction(id, price);
     Navigation.rootNavigator?.goBack();

@@ -1,3 +1,5 @@
+import { Menu } from '../main/type';
+
 // 定义菜单项数据结构
 export interface MenuItem {
   // 菜单项的唯一 id

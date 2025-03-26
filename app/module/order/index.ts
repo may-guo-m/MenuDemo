@@ -4,6 +4,7 @@ import { ComponentType } from 'react';
 import { MenuItem, OrderState } from './type';
 import Order from './Order';
 import { Navigation } from '../Navigation';
+import { Alert } from 'react-native';
 
 const initialState: OrderState = {
   submitMenuItems: {},
@@ -40,6 +41,11 @@ class OrderMoudle extends Module<RootState, 'order'> {
         name: 'Login',
       });
     } else {
+      Alert.alert('提交成功');
+      this.setState({
+        submitMenuItems: {},
+      });
+      Navigation.rootNavigator?.goBack();
     }
   }
 }

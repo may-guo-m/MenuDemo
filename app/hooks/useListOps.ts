@@ -1,11 +1,15 @@
-import { useAction, useSelector, useUnaryAction } from '@wonder/core-native';
-import { RootState } from '../type/state';
+import {
+  useAction,
+  useLoadingStatus,
+  useUnaryAction,
+} from '@wonder/core-native';
 import { mainActions } from '../module/main';
+import { useModuleState } from './useRuntimeState';
+import { LIST_LOADING_DATA } from '../module/main/type';
 
 export const useListRefreshLoadMore = () => {
-  const loading = useSelector((state: RootState) => state.app.main.loading);
-  const page = useSelector((state: RootState) => state.app.main.page);
-
+  const loading = useLoadingStatus(LIST_LOADING_DATA);
+  const { page } = useModuleState('main', ['page']);
   const loadMoreAction = useUnaryAction(mainActions.loadingMoreListSaga);
   const refreshAction = useAction(mainActions.fetchMenusSaga);
 

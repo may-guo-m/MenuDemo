@@ -8,10 +8,9 @@ export interface Menu {
 }
 
 export interface MainState {
-  loading: boolean;
-  refreshing: boolean;
   list: Menu[];
   page: number;
 }
 
-export const LOADING_DATA = 'LOADING_DATA';
+export const LIST_LOADING_DATA = 'LOADING_DATA';
+export const LIST_REFRESH_DATA = 'REFRESH_DATA';
