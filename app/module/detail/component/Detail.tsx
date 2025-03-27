@@ -46,7 +46,7 @@ const Detail = withSafeArea(() => {
     [info]
   );
 
-  const renderItem = React.useCallback(({ item }: { item: RenderItemType }) => {
+  const renderItem = ({ item }: { item: RenderItemType }) => {
     switch (item.type) {
       case ItemType.Image:
         return (
@@ -87,7 +87,7 @@ const Detail = withSafeArea(() => {
       default:
         return null;
     }
-  }, []);
+  };
 
   if (loading) {
     return <Loading />;

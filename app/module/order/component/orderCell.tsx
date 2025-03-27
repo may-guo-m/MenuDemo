@@ -75,4 +75,4 @@ const styles = StyleSheet.create({
     color: 'red',
   },
 });
-export default OrderCell;
+export default React.memo(OrderCell);

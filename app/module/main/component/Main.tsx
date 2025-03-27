@@ -2,19 +2,13 @@ import React from 'react';
 import { FlatList, Text, View, StyleSheet, RefreshControl } from 'react-native';
 import { withSafeArea } from '../../../component/SafeAreaHOC';
 import { useListRefreshLoadMore } from '../../../hooks/useListOps';
-import { LIST_REFRESH_DATA, Menu } from '../type';
+import { Menu } from '../type';
 import TabBar from './TabBar';
 import Loading from '../../../component/Loading';
 import { tabItems } from '../../../service/api';
 import { ViewOrderBar } from './ViewOrderBar';
-import { calculateOrderSummary } from '../../../util/util';
 import { MenuItemCell } from './MenuItemCell';
-import {
-  useNavigateToDetail,
-  useNavigateToOrder,
-} from '../../../hooks/useNavigation';
 import { useModuleState } from '../../../hooks/useRuntimeState';
-import { useLoadingStatus } from '@wonder/core-native';
 
 const Footer = ({ loading }: { loading: boolean }) => {
   if (loading) {
@@ -29,34 +23,14 @@ const Footer = ({ loading }: { loading: boolean }) => {
 
 export const Main: React.FC = withSafeArea(() => {
   const { list: menus } = useModuleState('main', ['list']);
-  const refreshing = useLoadingStatus(LIST_REFRESH_DATA);
   const { submitMenuItems } = useModuleState('order', ['submitMenuItems']);
-  const { orderPrice, itemCount } = React.useMemo(
-    () => calculateOrderSummary(submitMenuItems),
-    [submitMenuItems]
-  );
-  const handleNavigateToOrder = useNavigateToOrder();
-
-  const { loading, onRefresh, onEndReached } = useListRefreshLoadMore();
-  const handleNavigateToDetail = useNavigateToDetail<Menu>();
-
+  const { refreshing, loading, onRefresh, onEndReached } =
+    useListRefreshLoadMore();
   const flatListRef = React.useRef<FlatList<Menu>>(null);
-  const handleTabPress = (index: number) => {
-    const targetIndex = index * 5;
-    if (flatListRef.current) {
-      flatListRef.current.scrollToIndex({ index: targetIndex });
-    }
-  };
 
   const renderMenuItem = ({ item }: { item: Menu }) => {
     const quantity = submitMenuItems[item.id]?.count;
-    return (
-      <MenuItemCell
-        item={item}
-        quantity={quantity}
-        onPress={handleNavigateToDetail}
-      />
-    );
+    return <MenuItemCell item={item} quantity={quantity} />;
   };
 
   if (refreshing && !menus?.length) {
@@ -64,33 +38,27 @@ export const Main: React.FC = withSafeArea(() => {
   }
 
   return (
-    <>
-      <View style={style.container}>
-        <TabBar tabItems={tabItems} onTabPress={handleTabPress} />
-        <FlatList
-          ref={flatListRef}
-          data={menus}
-          renderItem={renderMenuItem}
-          keyExtractor={(item) => item.id.toString()}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-          extraData={submitMenuItems}
-          onEndReached={onEndReached}
-          onEndReachedThreshold={0.1}
-          showsVerticalScrollIndicator={false}
-          ListFooterComponent={<Footer loading={loading} />}
-          contentContainerStyle={style.contentContainerStyle}
-        />
-        <View style={style.orderViewButton}>
-          <ViewOrderBar
-            orderPrice={orderPrice}
-            itemCount={itemCount}
-            onPress={handleNavigateToOrder}
-          />
-        </View>
+    <View style={style.container}>
+      <TabBar tabItems={tabItems} flatListRef={flatListRef} />
+      <FlatList
+        ref={flatListRef}
+        data={menus}
+        renderItem={renderMenuItem}
+        keyExtractor={(item) => item.id.toString()}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        extraData={submitMenuItems}
+        onEndReached={onEndReached}
+        onEndReachedThreshold={0.1}
+        showsVerticalScrollIndicator={false}
+        ListFooterComponent={<Footer loading={loading} />}
+        contentContainerStyle={style.contentContainerStyle}
+      />
+      <View style={style.orderViewButton}>
+        <ViewOrderBar />
       </View>
-    </>
+    </View>
   );
 });
 

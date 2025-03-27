@@ -5,9 +5,10 @@ import {
 } from '@wonder/core-native';
 import { mainActions } from '../module/main';
 import { useModuleState } from './useRuntimeState';
-import { LIST_LOADING_DATA } from '../module/main/type';
+import { LIST_LOADING_DATA, LIST_REFRESH_DATA } from '../module/main/type';
 
 export const useListRefreshLoadMore = () => {
+  const refreshing = useLoadingStatus(LIST_REFRESH_DATA);
   const loading = useLoadingStatus(LIST_LOADING_DATA);
   const { page } = useModuleState('main', ['page']);
   const loadMoreAction = useUnaryAction(mainActions.loadingMoreListSaga);
@@ -25,6 +26,7 @@ export const useListRefreshLoadMore = () => {
   };
 
   return {
+    refreshing,
     loading,
     page,
     onRefresh,

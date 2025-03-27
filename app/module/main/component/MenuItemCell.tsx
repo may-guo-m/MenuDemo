@@ -1,44 +1,40 @@
 import React from 'react';
 import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Menu } from '../type';
-import { MenuItem } from '../../order/type';
+import { useNavigateToDetail } from '../../../hooks/useNavigation';
 
-export const MenuItemCell = ({
-  item,
-  quantity,
-  onPress,
-}: {
-  item: Menu;
-  quantity: number;
-  onPress: (item: Menu) => void;
-}) => {
-  return (
-    <TouchableOpacity onPress={() => onPress(item)}>
-      <View style={styles.cellContainer}>
-        <View>
-          <Image
-            source={{ uri: item.imageUrl }}
-            style={styles.cellImage}
-            resizeMode="cover"
-          />
-          {quantity > 0 && (
-            <View style={styles.quantityBubble}>
-              <Text style={styles.quantityText}>{quantity}</Text>
-            </View>
-          )}
+export const MenuItemCell = React.memo(
+  ({ item, quantity }: { item: Menu; quantity: number }) => {
+    console.log('MenuItemCell', item.id);
+    const handleNavigateToDetail = useNavigateToDetail<Menu>();
+    return (
+      <TouchableOpacity onPress={() => handleNavigateToDetail(item)}>
+        <View style={styles.cellContainer}>
+          <View>
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={styles.cellImage}
+              resizeMode="cover"
+            />
+            {quantity > 0 && (
+              <View style={styles.quantityBubble}>
+                <Text style={styles.quantityText}>{quantity}</Text>
+              </View>
+            )}
+          </View>
+          <View>
+            <Text
+              style={styles.cellTitleText}
+            >{`${item.name} + ${item.id}`}</Text>
+            <Text style={styles.cellDesText} numberOfLines={1}>
+              {item.description}
+            </Text>
+          </View>
         </View>
-        <View>
-          <Text
-            style={styles.cellTitleText}
-          >{`${item.name} + ${item.id}`}</Text>
-          <Text style={styles.cellDesText} numberOfLines={1}>
-            {item.description}
-          </Text>
-        </View>
-      </View>
-    </TouchableOpacity>
-  );
-};
+      </TouchableOpacity>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   cellContainer: {

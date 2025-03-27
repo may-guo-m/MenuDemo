@@ -1,19 +1,19 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { formatDollarAmount } from '../../../util/util';
+import { calculateOrderSummary, formatDollarAmount } from '../../../util/util';
 import { withCustomBottomBar } from '../../../component/BottomBarHOC';
+import { useModuleState } from '../../../hooks/useRuntimeState';
+import { useNavigateToOrder } from '../../../hooks/useNavigation';
 
-const Content = ({
-  itemCount,
-  orderPrice,
-  onPress,
-}: {
-  itemCount: number;
-  orderPrice: number;
-  onPress: () => void;
-}) => {
+const Content = () => {
+  const { submitMenuItems } = useModuleState('order', ['submitMenuItems']);
+  const { orderPrice, itemCount } = React.useMemo(
+    () => calculateOrderSummary(submitMenuItems),
+    [submitMenuItems]
+  );
+  const handleNavigateToOrder = useNavigateToOrder();
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={handleNavigateToOrder}>
       <View style={styles.leftSection}>
         <Text style={styles.text}>{itemCount}</Text>
       </View>

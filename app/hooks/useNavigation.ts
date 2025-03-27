@@ -1,11 +1,15 @@
+import React from 'react';
 import { Navigation } from '../module/Navigation';
 
 export const useNavigateToDetail = <T extends { id: number }>() => {
-  const handleNavigateToDetail = (item: T) =>
-    Navigation.switch({
-      name: 'Detail',
-      params: { menuId: item.id },
-    });
+  const handleNavigateToDetail = React.useCallback(
+    (item: T) =>
+      Navigation.switch({
+        name: 'Detail',
+        params: { menuId: item.id },
+      }),
+    []
+  );
 
   return handleNavigateToDetail;
 };

@@ -1,12 +1,24 @@
 import React from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import {
+  ScrollView,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  FlatList,
+} from 'react-native';
 
 interface TabBarProps {
   tabItems: string[];
-  onTabPress: (index: number) => void;
+  flatListRef: React.RefObject<FlatList>;
 }
 
-const TabBar: React.FC<TabBarProps> = ({ tabItems, onTabPress }) => {
+const TabBar: React.FC<TabBarProps> = ({ tabItems, flatListRef }) => {
+  const handleTabPress = (index: number) => {
+    const targetIndex = index * 3;
+    if (flatListRef.current) {
+      flatListRef.current.scrollToIndex({ index: targetIndex, animated: true });
+    }
+  };
   return (
     <ScrollView
       horizontal
@@ -16,7 +28,7 @@ const TabBar: React.FC<TabBarProps> = ({ tabItems, onTabPress }) => {
       {tabItems.map((tab, index) => (
         <TouchableOpacity
           key={index}
-          onPress={() => onTabPress(index)}
+          onPress={() => handleTabPress(index)}
           style={[
             styles.tabItem,
             // 这里可以根据选中状态添加不同样式，目前暂未实现
